@@ -1,7 +1,7 @@
 # Separate provisioning from guest configuration
 
-Use OpenTofu with `bpg/proxmox` to own Proxmox SDN and managed-guest lifecycles, and use Ansible to own configuration inside those guests. Ansible alone was rejected because its Proxmox collection does not provide the same explicit SDN resource coverage, while keeping guest configuration out of OpenTofu preserves a clear ownership boundary and avoids lifecycle scripts hidden inside infrastructure resources.
+Use OpenTofu to own Proxmox SDN and VM-level resources, and use Ansible to own configuration inside those VMs. Keeping guest configuration out of OpenTofu avoids lifecycle scripts hidden inside infrastructure resources and gives every setting one clear owner.
 
 ## Consequences
 
-The repository must pass connection details from OpenTofu outputs into Ansible inventory without allowing both tools to manage the same setting. At least one execution path must remain outside the managed guests so the management plane can be bootstrapped or recovered without depending on Jenkins or another guest it creates.
+Cloud-init performs only the minimum bootstrap required for Ansible access. OpenTofu outputs generate Ansible inventory; inventory is not a second source of infrastructure truth.
